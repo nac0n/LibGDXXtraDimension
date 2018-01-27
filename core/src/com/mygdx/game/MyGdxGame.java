@@ -24,7 +24,19 @@ public class MyGdxGame extends ApplicationAdapter {
     
     //Add update functions in here
     private void update() {
+    	System.out.println(loli.getX());
+    	System.out.println(loli.getY());
+    	loli.moveX(1);
+    	loli.moveY(1);
+    	System.out.println(loli.getX());
+    	System.out.println(loli.getY());
     	
+    	if(loli.getX() > 1280) {
+    		loli.setX(0);
+    	}
+    	if(loli.getY() > 800) {
+    		loli.setY(0);
+    	}
     }
     
     @Override
@@ -53,7 +65,7 @@ public class MyGdxGame extends ApplicationAdapter {
     
     	
     	batch.begin();
-        font.draw(batch, "LOLIS!!", 300, 800);
+        font.draw(batch, "LOLIS!!", loli.getX(), loli.getY());
         muu++;
         batch.end();
     
