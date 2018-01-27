@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.World;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -16,22 +19,25 @@ public class MyGdxGame extends ApplicationAdapter {
     private Character loli2;
     private Texture backImage;
     
+    //Constants used to go between coordinate systems
+    //example: renderX = body.getPosition().x * WORLD_TO_RENDER;
+    private final float WORLD_TO_RENDER = 96;
+    private final float RENDER_TO_WORLD = 1/96;
+    
     //put objects here
     //------------------
-    
+    private World world;
     
     //------------------
     
     
     //Add update functions in here
     private void update() {
-    	loli.moveX((int)(Math.random()*4)-2);
-    	loli.moveY((int)(Math.random()*4)-2);
     	
-    	loli2.moveX((int)(Math.random()*4)-1);
-    	loli2.moveY((int)(Math.random()*4)-1);
-    	
+    	world.step(1/60f, 6, 2);
 
+    	System.out.println("Box X: " + loli.getBoxX());
+    	System.out.println("Box Y: " + loli.getBoxY());
     	
     	if(loli.getX() > 1280) {
     		loli.setX(0);
@@ -64,15 +70,28 @@ public class MyGdxGame extends ApplicationAdapter {
     }
     
     @Override
-    public void create() {        
+    public void create() {   
+    	//Init for Box2D world
+    	Box2D.init();
+    	world = new World(new Vector2(0,-0.1f),true);
+    	
+    	
+    	
         batch = new SpriteBatch();    
         font = new BitmapFont();
-        loli = new Character(0,0);
-        loli2 = new Character(600,600);
+        loli = new Character(0,750, world);
+        loli2 = new Character(600,600, world);
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         font.setColor(Color.RED);
+        
+        fillWorld();
+        
     }
 
+    private void fillWorld() {
+    	
+    }
+    
     @Override
     public void dispose() {
         batch.dispose();
@@ -85,7 +104,6 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         update();
-        
         
         
         double x = Math.pow((loli.getX() - loli2.getX()),2);
@@ -103,9 +121,9 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	//left
     	if(loli.goingRight())
-    		font.draw(batch, "(>owo)>", loli.getX(), loli.getY());
+    		font.draw(batch, "(>owo)>", loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
     	else
-    		font.draw(batch, "<(owo<)", loli.getX(), loli.getY());
+    		font.draw(batch, "<(owo<)", loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
         //right
     	if(loli2.goingRight())
     		font.draw(batch, "xD", loli2.getX(), loli2.getY());
