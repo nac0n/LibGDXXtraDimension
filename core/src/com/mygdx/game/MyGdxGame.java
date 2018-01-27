@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,7 +19,9 @@ public class MyGdxGame extends ApplicationAdapter {
     private BitmapFont font;
     private Character loli;
     private Character loli2;
+    private Controller controller;
     private Texture backImage;
+    private Map map;
     
     //Constants used to go between coordinate systems
     //example: renderX = body.getPosition().x * WORLD_TO_RENDER;
@@ -36,21 +39,22 @@ public class MyGdxGame extends ApplicationAdapter {
     private void update() {
     	
 
-    	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		loli.moveX(-1);
-    	}
+    	
 
     	world.step(1/60f, 6, 2);
 
-    	System.out.println("Box X: " + loli.getBoxX());
-    	System.out.println("Box Y: " + loli.getBoxY());
+    	//System.out.println("Box X: " + loli.getBoxX());
+    	//System.out.println("Box Y: " + loli.getBoxY());
     	
+    	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+    		loli.moveX(-1);
+    	}
     	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
     		loli.moveX(1);
-    		
     	}
-    	
     	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+    	}
+    	if(true) {
     		
     	}
     	
@@ -96,10 +100,9 @@ public class MyGdxGame extends ApplicationAdapter {
     public void create() {   
     	//Init for Box2D world
     	Box2D.init();
+    	
     	world = new World(new Vector2(0,-0.1f),true);
-    	
-    	
-    	
+    	map = new Map("../core/assets/matrix.txt");
         batch = new SpriteBatch();    
         font = new BitmapFont();
         loli = new Character(0,750, world);
