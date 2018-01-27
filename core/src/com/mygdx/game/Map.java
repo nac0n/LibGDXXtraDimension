@@ -6,7 +6,7 @@ import java.io.FileReader;
 public class Map {
 	private int[][] matrix;
 	private int spawnX, spawnY;
-	private BufferedReader in = new BufferedReader(new FileReader(""));
+	//private BufferedReader in = new BufferedReader(new FileReader(""));
 	
 	Map(String fileName) {
 		//Open file with fileName and add into the matrix
