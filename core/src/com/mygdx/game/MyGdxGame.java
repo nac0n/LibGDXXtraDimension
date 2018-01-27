@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
@@ -25,13 +27,15 @@ public class MyGdxGame extends ApplicationAdapter {
     
     //Constants used to go between coordinate systems
     //example: renderX = body.getPosition().x * WORLD_TO_RENDER;
-    private final float WORLD_TO_RENDER = 96;
-    private final float RENDER_TO_WORLD = 1/96;
+    private final float WORLD_TO_RENDER = 96f;
+    private final float RENDER_TO_WORLD = 1/96f;
     
     //put objects here
     //------------------
     private World world;
-    
+    private Block floor;
+    private Texture floorTex;
+    private Texture charTex;
     //------------------
     
     
@@ -39,6 +43,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private void update() {
     	
 
+<<<<<<< HEAD
     	
 
     	world.step(1/60f, 6, 2);
@@ -56,6 +61,33 @@ public class MyGdxGame extends ApplicationAdapter {
     	}
     	if(true) {
     		
+=======
+    	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+    		loli.moveX(-1);
+    	} 
+    	else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+    		loli.moveX(1);
+    	}
+    	else {
+    		loli.moveX(0);
+    	}
+
+    	world.step(1/60f, 6, 2);
+
+    	System.out.println("Box X: " + floor.getWidth());
+    	System.out.println("Box Y: " + floor.getHeight());
+    	
+    	
+    	
+    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+    		loli.moveY(2f);
+    	}
+    	else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+    		loli.moveY(-1);
+    	}
+    	else {
+    		loli.moveY(0);
+>>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
     	}
     	
 //    	loli.moveX((int)(Math.random()*4)-2);
@@ -100,6 +132,12 @@ public class MyGdxGame extends ApplicationAdapter {
     public void create() {   
     	//Init for Box2D world
     	Box2D.init();
+<<<<<<< HEAD
+=======
+    	world = new World(new Vector2(0,-10f),true);
+    	
+    	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
+>>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
     	
     	world = new World(new Vector2(0,-0.1f),true);
     	map = new Map("../core/assets/matrix.txt");
@@ -109,6 +147,8 @@ public class MyGdxGame extends ApplicationAdapter {
         loli2 = new Character(600,600, world);
 
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
+        floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
+        charTex = new Texture(Gdx.files.internal("../core/assets/placeChar.png")); 
         font.setColor(Color.RED);
         
         fillWorld();
@@ -133,29 +173,18 @@ public class MyGdxGame extends ApplicationAdapter {
         update();
         
         
-        double x = Math.pow((loli.getX() - loli2.getX()),2);
-        double y = Math.pow((loli.getY() - loli2.getY()),2);
-    	
-        double distance = Math.sqrt(x+y);
-        if(distance < 10) {
-        	System.out.println("OMAEWA MO SHINDEIRU!");
-        	System.exit(0);
-        }
-        	
         
     	batch.begin();
     	batch.draw(backImage,0,0);
     	
+    	
     	//left
-    	if(loli.goingRight())
-    		font.draw(batch, "(>owo)>", loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-    	else
-    		font.draw(batch, "<(owo<)", loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-        //right
-    	if(loli2.goingRight())
-    		font.draw(batch, "xD", loli2.getX(), loli2.getY());
-    	else
-    		font.draw(batch, "Cx", loli2.getX(), loli2.getY());
+    	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
+        
+    	
+
+    	batch.draw(floorTex, (floor.getX()-floor.getWidth())*WORLD_TO_RENDER,
+    				(floor.getY()+floor.getHeight())*WORLD_TO_RENDER);
         
         
         batch.end();
