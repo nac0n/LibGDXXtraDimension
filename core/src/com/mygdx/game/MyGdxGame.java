@@ -14,7 +14,7 @@ public class MyGdxGame extends ApplicationAdapter {
     private BitmapFont font;
     private Character loli;
     private Character loli2;
-    
+    private Texture backImage;
     
     //put objects here
     //------------------
@@ -69,6 +69,7 @@ public class MyGdxGame extends ApplicationAdapter {
         font = new BitmapFont();
         loli = new Character(0,0);
         loli2 = new Character(600,600);
+        backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         font.setColor(Color.RED);
     }
 
@@ -85,7 +86,7 @@ public class MyGdxGame extends ApplicationAdapter {
         
         update();
         
-        int muu = 0;
+        
         
         double x = Math.pow((loli.getX() - loli2.getX()),2);
         double y = Math.pow((loli.getY() - loli2.getY()),2);
@@ -98,6 +99,7 @@ public class MyGdxGame extends ApplicationAdapter {
         	
         
     	batch.begin();
+    	batch.draw(backImage,0,0);
     	
     	//left
     	if(loli.goingRight())
@@ -110,7 +112,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	else
     		font.draw(batch, "Cx", loli2.getX(), loli2.getY());
         
-        muu++;
+        
         batch.end();
     
         
