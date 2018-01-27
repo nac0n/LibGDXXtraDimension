@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
     private BitmapFont font;
+    private Character loli;
+    
     
     //Add update functions in here
     private void update() {
@@ -22,6 +24,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public void create() {        
         batch = new SpriteBatch();    
         font = new BitmapFont();
+        loli = new Character(0,0);
         font.setColor(Color.RED);
     }
 
