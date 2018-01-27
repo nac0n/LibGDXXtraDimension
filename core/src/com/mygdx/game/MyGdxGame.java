@@ -42,10 +42,6 @@ public class MyGdxGame extends ApplicationAdapter {
     //Add update functions in here
     private void update() {
     	
-
-<<<<<<< HEAD
-    	
-
     	world.step(1/60f, 6, 2);
 
     	//System.out.println("Box X: " + loli.getBoxX());
@@ -58,36 +54,6 @@ public class MyGdxGame extends ApplicationAdapter {
     		loli.moveX(1);
     	}
     	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    	}
-    	if(true) {
-    		
-=======
-    	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		loli.moveX(-1);
-    	} 
-    	else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-    		loli.moveX(1);
-    	}
-    	else {
-    		loli.moveX(0);
-    	}
-
-    	world.step(1/60f, 6, 2);
-
-    	System.out.println("Box X: " + floor.getWidth());
-    	System.out.println("Box Y: " + floor.getHeight());
-    	
-    	
-    	
-    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    		loli.moveY(2f);
-    	}
-    	else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-    		loli.moveY(-1);
-    	}
-    	else {
-    		loli.moveY(0);
->>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
     	}
     	
 //    	loli.moveX((int)(Math.random()*4)-2);
@@ -132,12 +98,9 @@ public class MyGdxGame extends ApplicationAdapter {
     public void create() {   
     	//Init for Box2D world
     	Box2D.init();
-<<<<<<< HEAD
-=======
     	world = new World(new Vector2(0,-10f),true);
     	
     	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
->>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
     	
     	world = new World(new Vector2(0,-0.1f),true);
     	map = new Map("../core/assets/matrix.txt");
