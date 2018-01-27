@@ -24,7 +24,7 @@ public class Block {
 		
 		
 		shape.setAsBox(this.width, this.height);
-		this.body.createFixture(shape, 1.f);
+		this.body.createFixture(shape, 0.f);
 		shape.dispose(); //Remove shape
 	}
 	

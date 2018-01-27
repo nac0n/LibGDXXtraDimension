@@ -24,9 +24,17 @@ public class Character {
 		
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(0.5f, 1f);
-		this.body.createFixture(shape, 1.f);
+		
+		FixtureDef fixt = new FixtureDef();
+		fixt.shape = shape;
+		fixt.density = 1.f;
+		
+		this.body.createFixture(fixt);
+		
+		//this.body.createFixture(shape, 1.f);
 		shape.dispose(); //Remove shape
-		body.setLinearVelocity(0.1f, 0.0f);
+		
+		//body.setLinearVelocity(0.1f, 0.0f);
 	}
 	
 	public void moveX(float mx){

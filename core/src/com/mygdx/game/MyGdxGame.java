@@ -36,32 +36,22 @@ public class MyGdxGame extends ApplicationAdapter {
     private Block floor;
     private Texture floorTex;
     private Texture charTex;
+    
+    private Texture block1;
+    private Texture block2;
+    private Texture block3;
+    private Texture block4;
+    
+    private Texture[] blockTex;
     //------------------
     
     
     //Add update functions in here
     private void update() {
     	
-
-<<<<<<< HEAD
-    	
-
-    	world.step(1/60f, 6, 2);
-
     	//System.out.println("Box X: " + loli.getBoxX());
     	//System.out.println("Box Y: " + loli.getBoxY());
     	
-    	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		loli.moveX(-1);
-    	}
-    	if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-    		loli.moveX(1);
-    	}
-    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    	}
-    	if(true) {
-    		
-=======
     	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
     		loli.moveX(-1);
     	} 
@@ -72,75 +62,28 @@ public class MyGdxGame extends ApplicationAdapter {
     		loli.moveX(0);
     	}
 
-    	world.step(1/60f, 6, 2);
+    	world.step(1/60f, 10, 5);
 
-    	System.out.println("Box X: " + floor.getWidth());
-    	System.out.println("Box Y: " + floor.getHeight());
-    	
-    	
+
     	
     	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
     		loli.moveY(2f);
     	}
-    	else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-    		loli.moveY(-1);
-    	}
-    	else {
-    		loli.moveY(0);
->>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
-    	}
-    	
-//    	loli.moveX((int)(Math.random()*4)-2);
-//    	loli.moveY((int)(Math.random()*4)-2);
-//    	
-//    	loli2.moveX((int)(Math.random()*4)-1);
-//    	loli2.moveY((int)(Math.random()*4)-1);
-//    	
-//
-//    	
-//    	if(loli.getX() > 1280) {
-//    		loli.setX(0);
-//    	}
-//    	else if(loli.getX() < 0 ) {
-//    		loli.setX(1280);    		
-//    	}
-//
-//    	if(loli.getY() > 800) {
-//    		loli.setY(0);
-//    	}
-//    	else if(loli.getY() < 0 ) {
-//    		loli.setY(800);
-//    	}
-//    	
-//    	if(loli2.getX() > 1280) {
-//    		loli2.setX(0);
-//    	}
-//    	else if(loli2.getX() < 0 ) {
-//    		loli2.setX(1280);    		
-//    	}
-//
-//    	if(loli2.getY() > 800) {
-//    		loli2.setY(0);
-//    	}
-//    	else if(loli2.getY() < 0 ) {
-//    		loli2.setY(800);
-//    	}
-//    	
+    
     }
     
     @Override
     public void create() {   
     	//Init for Box2D world
     	Box2D.init();
-<<<<<<< HEAD
-=======
     	world = new World(new Vector2(0,-10f),true);
-    	
     	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
->>>>>>> 957d6a63ef283125935b7506d3131f4f67d08abd
     	
-    	world = new World(new Vector2(0,-0.1f),true);
-    	map = new Map("../core/assets/matrix.txt");
+    	map = new Map("../core/assets/matrix.txt", world, RENDER_TO_WORLD);
+    	
+    	
+    	
+    	
         batch = new SpriteBatch();    
         font = new BitmapFont();
         loli = new Character(0,750, world);
@@ -148,6 +91,16 @@ public class MyGdxGame extends ApplicationAdapter {
 
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
+        
+        //Block textures create:
+        blockTex = new Texture[4];
+        //block1 = new Texture(Gdx.files.internal("../core/assets/block1"));
+        
+        blockTex[0] =  new Texture(Gdx.files.internal("../core/assets/block1.png"));
+        blockTex[1] =  new Texture(Gdx.files.internal("../core/assets/block2.png"));
+        blockTex[2] =  new Texture(Gdx.files.internal("../core/assets/block3.png"));
+        blockTex[3] =  new Texture(Gdx.files.internal("../core/assets/block4.png"));
+        
         charTex = new Texture(Gdx.files.internal("../core/assets/placeChar.png")); 
         font.setColor(Color.RED);
         
@@ -172,26 +125,34 @@ public class MyGdxGame extends ApplicationAdapter {
         
         update();
         
-        
-        
     	batch.begin();
     	batch.draw(backImage,0,0);
-    	
     	
     	//left
     	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
         
-    	
-
     	batch.draw(floorTex, (floor.getX()-floor.getWidth())*WORLD_TO_RENDER,
     				(floor.getY()+floor.getHeight())*WORLD_TO_RENDER);
-        
-        
+    	
+    	//Render floor from map class 
+    	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
+			for(int x = 0; x < map.getMapWidth(); x++) {
+				if(map.getValue(y, x) != 0) {
+		    		batch.draw(blockTex[map.getValue(y, x) - 1], x*64, 1280-y*64);
+		    	}	
+			}
+		}
+    	
+    	for(int y = 0; y < map.getMapHeight(); y++) {
+			for(int x = 0; x < map.getMapWidth(); x++) {
+				
+			}
+		}
+    	
+    	
         batch.end();
-    
-        
     }
-
+    
     @Override
     public void resize(int width, int height) {
     }
