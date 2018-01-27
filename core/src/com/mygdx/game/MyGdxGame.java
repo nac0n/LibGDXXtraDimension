@@ -13,6 +13,11 @@ public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
     private BitmapFont font;
     
+    //Add update functions in here
+    private void update() {
+    	
+    }
+    
     @Override
     public void create() {        
         batch = new SpriteBatch();    
@@ -30,6 +35,8 @@ public class MyGdxGame extends ApplicationAdapter {
     public void render() {        
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        update();
         
         batch.begin();
         font.draw(batch, "Hello World", 200, 200);
