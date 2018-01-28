@@ -55,10 +55,10 @@ public class MyGdxGame extends ApplicationAdapter {
     	//System.out.println("Box Y: " + loli.getBoxY());
     	
     	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		loli.moveX(-1);
+    		loli.moveX(-2);
     	} 
     	else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-    		loli.moveX(1);
+    		loli.moveX(2);
     	}
     	else {
     		loli.moveX(0);
