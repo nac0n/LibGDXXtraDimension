@@ -1,10 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,14 +15,14 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
     private BitmapFont font;
     private Character loli;
-    private Character loli2;
-    private Controller controller;
     private Texture backImage;
     private Map map;
     
@@ -39,11 +37,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Block floor;
     private Texture floorTex;
     private Texture charTex;
-    
-    private Texture block1;
-    private Texture block2;
-    private Texture block3;
-    private Texture block4;
+    private ContactListener cl;
+    private Contact contact;
     
     private Texture[] blockTex;
     
@@ -68,9 +63,8 @@ public class MyGdxGame extends ApplicationAdapter {
     	else {
     		loli.moveX(0);
     	}
-
+    	
     	world.step(1/60f, 10, 5);
-
     	camera.update();
     	
     	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -97,9 +91,9 @@ public class MyGdxGame extends ApplicationAdapter {
     	
         batch = new SpriteBatch();    
         font = new BitmapFont();
-        loli = new Character(0,750, world, 64*RENDER_TO_WORLD, 128*RENDER_TO_WORLD);
+        loli = new Character(0,750, world, 123*RENDER_TO_WORLD, 192*RENDER_TO_WORLD);
         //loli2 = new Character(600,600, world);
-
+        
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
         
@@ -112,7 +106,7 @@ public class MyGdxGame extends ApplicationAdapter {
         blockTex[2] =  new Texture(Gdx.files.internal("../core/assets/block3.png"));
         blockTex[3] =  new Texture(Gdx.files.internal("../core/assets/block4.png"));
         
-        charTex = new Texture(Gdx.files.internal("../core/assets/placeChar.png")); 
+        charTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
         font.setColor(Color.RED);
         
         debugRender = new Box2DDebugRenderer();
@@ -160,7 +154,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		}
     	
     	
-    	
         batch.end();
         debugRender.render(world, cameraBox2D);
     }
@@ -176,4 +169,6 @@ public class MyGdxGame extends ApplicationAdapter {
     @Override
     public void resume() {
     }
+    
+    
 }

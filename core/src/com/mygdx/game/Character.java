@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Character {
@@ -29,7 +28,7 @@ public class Character {
 		this.body = world.createBody(bodyDef);
 		body.setFixedRotation(true);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(this.width, this.height);
+		shape.setAsBox(this.width/2, this.height);
 		
 		FixtureDef fixt = new FixtureDef();
 		fixt.shape = shape;
@@ -54,7 +53,8 @@ public class Character {
 	
 	public void moveY(float my) {
 		//body.setLinearVelocity(body.getLinearVelocity().x, my);
-		body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
+		if(body.getLinearVelocity().y == 0)
+			body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
 		if(my < 0)
 			down = true;
 		else
