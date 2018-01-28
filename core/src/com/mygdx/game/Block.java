@@ -17,23 +17,23 @@ public class Block {
 		//Creating body
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.StaticBody;
-		bodyDef.position.set(((float)x)/96, ((float)y)/96);
+		bodyDef.position.set(((float)x)/96 + this.width, ((float)y)/96 + this.height);
 		this.body = world.createBody(bodyDef);
 		
 		PolygonShape shape = new PolygonShape();
 		
 		
 		shape.setAsBox(this.width, this.height);
-		this.body.createFixture(shape, 0.f);
+		this.body.createFixture(shape, 5.f);
 		shape.dispose(); //Remove shape
 	}
 	
 	public float getX() {
-		return body.getPosition().x;
+		return body.getPosition().x - this.width;
 	}
 	
 	public float getY() {
-		return body.getPosition().y;
+		return body.getPosition().y - this.height;
 	}
 	
 	public float getWidth() {
