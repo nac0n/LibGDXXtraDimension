@@ -60,7 +60,11 @@ public class Character {
 		else
 			down = false;
 	}
-		
+	
+	public Body getBody() {
+		return body;
+	}
+	
 	public int getX() {
 		return x;		
 	}

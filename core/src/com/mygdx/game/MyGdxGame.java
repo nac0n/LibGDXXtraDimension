@@ -19,6 +19,9 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
+
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
     private BitmapFont font;
@@ -39,6 +42,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Texture charTex;
     private ContactListener cl;
     private Contact contact;
+    private RayHandler rayhandler;
+    private PointLight pl;
     
     private Texture[] blockTex;
     
@@ -65,6 +70,9 @@ public class MyGdxGame extends ApplicationAdapter {
     	}
     	
     	world.step(1/60f, 10, 5);
+    	//pl.setPosition(loli.getBoxX()+2, loli.getBoxY()+2);
+    	//pl.update();
+    	//rayhandler.update();
     	camera.update();
     	
     	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
@@ -79,6 +87,12 @@ public class MyGdxGame extends ApplicationAdapter {
     	Box2D.init();
     	world = new World(new Vector2(0,-10f),true);
     	//floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
+    	rayhandler = new RayHandler(world);
+    	rayhandler.setShadows(true);
+    	rayhandler.setAmbientLight(0, 0, 0, 0.2f); 
+    	rayhandler.setBlurNum(3);
+    	
+    	
     	
     	map = new Map("../core/assets/matrix.txt", world, RENDER_TO_WORLD);
     	
@@ -93,6 +107,10 @@ public class MyGdxGame extends ApplicationAdapter {
         font = new BitmapFont();
         loli = new Character(0,750, world, 123*RENDER_TO_WORLD, 192*RENDER_TO_WORLD);
         //loli2 = new Character(600,600, world);
+        pl = new PointLight(rayhandler, 128, new Color(1,1,1,0.8f), 400, 600, 400);
+        pl.setSoft(true);
+        pl.setStaticLight(true);
+        //pl.attachToBody(loli.getBody());
         
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
@@ -123,6 +141,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        rayhandler.dispose();
     }
 
     @Override
@@ -155,7 +174,11 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	
         batch.end();
-        debugRender.render(world, cameraBox2D);
+        
+        rayhandler.setCombinedMatrix(camera);
+        rayhandler.updateAndRender();
+        //rayhandler.set
+        //debugRender.render(world, cameraBox2D);
     }
     
     @Override
