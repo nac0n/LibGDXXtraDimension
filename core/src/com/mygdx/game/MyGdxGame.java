@@ -73,8 +73,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
     	camera.update();
     	
-    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    		loli.moveY(2f);
+    	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+    		loli.moveY(7f);
     	}
     
     }
