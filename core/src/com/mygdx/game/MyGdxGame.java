@@ -84,7 +84,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	//Init for Box2D world
     	Box2D.init();
     	world = new World(new Vector2(0,-10f),true);
-    	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
+    	//floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
     	
     	map = new Map("../core/assets/matrix.txt", world, RENDER_TO_WORLD);
     	
@@ -148,13 +148,13 @@ public class MyGdxGame extends ApplicationAdapter {
     	//left
     	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
         
-    	batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
+    	//batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
     	
     	//Render floor from map class 
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
 			for(int x = 0; x < map.getMapWidth(); x++) {
 				if(map.getValue(y, x) != 0) {
-		    		batch.draw(blockTex[map.getValue(y, x) - 1], x*64, 1280-y*64);
+		    		batch.draw(blockTex[map.getValue(y, x) - 1], x*64, (1280-64)-y*64);
 		    	}	
 			}
 		}
