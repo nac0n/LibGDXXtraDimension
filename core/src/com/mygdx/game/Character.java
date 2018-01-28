@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Character {
@@ -29,7 +28,7 @@ public class Character {
 		this.body = world.createBody(bodyDef);
 		body.setFixedRotation(true);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(this.width, this.height);
+		shape.setAsBox(this.width/2, this.height);
 		
 		FixtureDef fixt = new FixtureDef();
 		fixt.shape = shape;
