@@ -91,7 +91,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	
         batch = new SpriteBatch();    
         font = new BitmapFont();
-        loli = new Character(0,750, world, 64*RENDER_TO_WORLD, 128*RENDER_TO_WORLD);
+        loli = new Character(0,750, world, 123*RENDER_TO_WORLD, 192*RENDER_TO_WORLD);
         //loli2 = new Character(600,600, world);
         
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
