@@ -54,7 +54,8 @@ public class Character {
 	
 	public void moveY(float my) {
 		//body.setLinearVelocity(body.getLinearVelocity().x, my);
-		body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
+		if(body.getLinearVelocity().y == 0)
+			body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
 		if(my < 0)
 			down = true;
 		else
