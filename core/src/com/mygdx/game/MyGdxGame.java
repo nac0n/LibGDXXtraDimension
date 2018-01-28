@@ -7,13 +7,16 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.controllers.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MyGdxGame extends ApplicationAdapter {
@@ -43,6 +46,10 @@ public class MyGdxGame extends ApplicationAdapter {
     private Texture block4;
     
     private Texture[] blockTex;
+    
+    private Matrix4 cameraBox2D;
+    private Box2DDebugRenderer debugRender;
+    public OrthographicCamera camera;
     //------------------
     
     
@@ -64,7 +71,7 @@ public class MyGdxGame extends ApplicationAdapter {
 
     	world.step(1/60f, 10, 5);
 
-
+    	camera.update();
     	
     	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
     		loli.moveY(2f);
@@ -81,13 +88,17 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	map = new Map("../core/assets/matrix.txt", world, RENDER_TO_WORLD);
     	
-    	
-    	
+    	float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();      
+        
+        camera = new OrthographicCamera(w, h);
+        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+    	camera.update();
     	
         batch = new SpriteBatch();    
         font = new BitmapFont();
-        loli = new Character(0,750, world);
-        loli2 = new Character(600,600, world);
+        loli = new Character(0,750, world, 64*RENDER_TO_WORLD, 128*RENDER_TO_WORLD);
+        //loli2 = new Character(600,600, world);
 
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
@@ -103,6 +114,8 @@ public class MyGdxGame extends ApplicationAdapter {
         
         charTex = new Texture(Gdx.files.internal("../core/assets/placeChar.png")); 
         font.setColor(Color.RED);
+        
+        debugRender = new Box2DDebugRenderer();
         
         fillWorld();
         
@@ -124,6 +137,10 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         update();
+        cameraBox2D = camera.combined.cpy();
+        cameraBox2D.scl(WORLD_TO_RENDER);
+        
+        batch.setProjectionMatrix(camera.combined);
         
     	batch.begin();
     	batch.draw(backImage,0,0);
@@ -131,8 +148,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	//left
     	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
         
-    	batch.draw(floorTex, (floor.getX()-floor.getWidth())*WORLD_TO_RENDER,
-    				(floor.getY()+floor.getHeight())*WORLD_TO_RENDER);
+    	batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
     	
     	//Render floor from map class 
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
@@ -143,14 +159,10 @@ public class MyGdxGame extends ApplicationAdapter {
 			}
 		}
     	
-    	for(int y = 0; y < map.getMapHeight(); y++) {
-			for(int x = 0; x < map.getMapWidth(); x++) {
-				
-			}
-		}
     	
     	
         batch.end();
+        debugRender.render(world, cameraBox2D);
     }
     
     @Override

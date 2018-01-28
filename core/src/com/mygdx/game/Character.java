@@ -8,22 +8,28 @@ public class Character {
 	private int y;
 	private Body body;
 	
+	private float width = 0.5f;
+	private float height = 1.0f;
+	
 	private boolean right;
 	private boolean down;
 	
 	private float vY;
-	Character(int sx, int sy, World world) {
+	Character(int sx, int sy, World world, float width, float height) {
 		x = sx;
 		y = sy;
+		
+		this.width = width/2;
+		this.height = height/2;
 		
 		//Creating body
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.DynamicBody;
-		bodyDef.position.set(((float)x)/96, ((float)y)/96);
+		bodyDef.position.set(((float)x)/96 + this.width, ((float)y)/96 + this.height);
 		this.body = world.createBody(bodyDef);
-		
+		body.setFixedRotation(true);
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(0.5f, 1f);
+		shape.setAsBox(this.width, this.height);
 		
 		FixtureDef fixt = new FixtureDef();
 		fixt.shape = shape;
@@ -82,11 +88,11 @@ public class Character {
 	}
 	
 	public float getBoxX() {
-		return body.getPosition().x;
+		return body.getPosition().x - this.width;
 	}
 	
 	public float getBoxY() {
-		return body.getPosition().y;
+		return body.getPosition().y - this.height;
 	}
 		
 }
