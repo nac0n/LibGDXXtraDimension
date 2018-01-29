@@ -42,7 +42,7 @@ public class Character {
 		//body.setLinearVelocity(0.1f, 0.0f);
 	}
 	
-	public void moveX(float mx){
+	public void moveX(float mx) {
 		body.setLinearVelocity(mx, body.getLinearVelocity().y);
 		
 		if(mx > 0)
@@ -59,6 +59,15 @@ public class Character {
 			down = true;
 		else
 			down = false;
+	}
+	
+	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
 	}
 	
 	public Body getBody() {

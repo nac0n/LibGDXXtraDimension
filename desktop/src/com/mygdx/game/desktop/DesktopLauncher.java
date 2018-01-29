@@ -8,7 +8,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
-		config.title = "Xtra Dimensional Lolis";
+		config.title = "Xtra Dimensional";
 		config.width = 1280;
 		config.height = 800;
         

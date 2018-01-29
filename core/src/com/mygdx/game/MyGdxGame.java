@@ -37,8 +37,6 @@ public class MyGdxGame extends ApplicationAdapter {
     //put objects here
     //------------------
     private World world;
-    private Block floor;
-    private Texture floorTex;
     private Texture charTex;
     private ContactListener cl;
     private Contact contact;
@@ -49,16 +47,10 @@ public class MyGdxGame extends ApplicationAdapter {
     
     private Matrix4 cameraBox2D;
     private Box2DDebugRenderer debugRender;
-    public OrthographicCamera camera;
+    public OrthographicCamera camera, lightCamera;
     //------------------
     
-    
-    //Add update functions in here
-    private void update() {
-    	
-    	//System.out.println("Box X: " + loli.getBoxX());
-    	//System.out.println("Box Y: " + loli.getBoxY());
-    	
+    private void input() {
     	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
     		loli.moveX(-2);
     	} 
@@ -69,15 +61,29 @@ public class MyGdxGame extends ApplicationAdapter {
     		loli.moveX(0);
     	}
     	
-    	world.step(1/60f, 10, 5);
-    	//pl.setPosition(loli.getBoxX()+2, loli.getBoxY()+2);
-    	//pl.update();
-    	//rayhandler.update();
-    	camera.update();
-    	
     	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
     		loli.moveY(7f);
     	}
+    }
+    
+    //Add update functions in here
+    private void update() {
+    	
+    	//Input update
+    	input();
+    	
+    	//Do a step in the physics
+    	world.step(1/60f, 3, 3);
+    	
+    	//Render camera update after stepping is done in physics
+    	camera.update();
+    	
+    	//Change light position to follow player to give sight
+    	pl.setPosition((loli.getBoxX()+loli.getWidth()), 
+    					(loli.getBoxY()+loli.getHeight()*1.5f));
+    	pl.update();
+    	lightCamera.update();
+    
     
     }
     
@@ -86,11 +92,10 @@ public class MyGdxGame extends ApplicationAdapter {
     	//Init for Box2D world
     	Box2D.init();
     	world = new World(new Vector2(0,-10f),true);
-    	//floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
     	rayhandler = new RayHandler(world);
     	rayhandler.setShadows(true);
-    	rayhandler.setAmbientLight(0, 0, 0, 0.2f); 
-    	rayhandler.setBlurNum(3);
+    	rayhandler.setAmbientLight(0, 0, 0, 0.0f); 
+    	rayhandler.setBlurNum(1);
     	
     	
     	
@@ -103,21 +108,22 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
     	camera.update();
     	
+    	lightCamera = new OrthographicCamera(w*RENDER_TO_WORLD, h*RENDER_TO_WORLD);
+    	lightCamera.position.set(lightCamera.viewportWidth / 2f, lightCamera.viewportHeight / 2f, 0);
+    	lightCamera.update();
+    	
         batch = new SpriteBatch();    
         font = new BitmapFont();
         loli = new Character(0,750, world, 123*RENDER_TO_WORLD, 192*RENDER_TO_WORLD);
-        //loli2 = new Character(600,600, world);
-        pl = new PointLight(rayhandler, 128, new Color(1,1,1,0.8f), 400, 600, 400);
+     
+        pl = new PointLight(rayhandler, 256, new Color(1,1,1,0.8f), 600*RENDER_TO_WORLD, 0, 0);
         pl.setSoft(true);
-        pl.setStaticLight(true);
-        //pl.attachToBody(loli.getBody());
+        pl.setStaticLight(false);
         
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
-        floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
         
         //Block textures create:
         blockTex = new Texture[4];
-        //block1 = new Texture(Gdx.files.internal("../core/assets/block1"));
         
         blockTex[0] =  new Texture(Gdx.files.internal("../core/assets/block1.png"));
         blockTex[1] =  new Texture(Gdx.files.internal("../core/assets/block2.png"));
@@ -129,18 +135,14 @@ public class MyGdxGame extends ApplicationAdapter {
         
         debugRender = new Box2DDebugRenderer();
         
-        fillWorld();
-        
     }
 
-    private void fillWorld() {
-    	
-    }
     
     @Override
     public void dispose() {
         batch.dispose();
         font.dispose();
+        world.dispose();
         rayhandler.dispose();
     }
 
@@ -160,10 +162,8 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	//left
     	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-        
-    	//batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
     	
-    	//Render floor from map class 
+    	//Render the map from map object
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
 			for(int x = 0; x < map.getMapWidth(); x++) {
 				if(map.getValue(y, x) != 0) {
@@ -175,14 +175,15 @@ public class MyGdxGame extends ApplicationAdapter {
     	
         batch.end();
         
-        rayhandler.setCombinedMatrix(camera);
+        rayhandler.setCombinedMatrix(lightCamera);
         rayhandler.updateAndRender();
-        //rayhandler.set
+        
         //debugRender.render(world, cameraBox2D);
     }
     
     @Override
     public void resize(int width, int height) {
+    	
     }
 
     @Override
