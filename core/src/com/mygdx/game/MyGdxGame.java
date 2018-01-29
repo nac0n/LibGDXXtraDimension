@@ -9,15 +9,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -36,9 +35,12 @@ public class MyGdxGame extends ApplicationAdapter {
     private World world;
     private Block floor;
     private Texture floorTex;
-    private Texture charTex;
-    private ContactListener cl;
-    private Contact contact;
+    private Texture charTex, walkTex;
+    private int current_frame = 0;
+    private TextureRegion[] walkAnimation = new TextureRegion[4];
+    
+    private int frameTicks = 0;
+    private final int aniSpeed = 16;
     
     private Texture[] blockTex;
     
@@ -46,7 +48,6 @@ public class MyGdxGame extends ApplicationAdapter {
     private Box2DDebugRenderer debugRender;
     public OrthographicCamera camera;
     //------------------
-    
     
     //Add update functions in here
     private void update() {
@@ -67,10 +68,26 @@ public class MyGdxGame extends ApplicationAdapter {
     	world.step(1/60f, 10, 5);
     	camera.update();
     	
-    	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-    		loli.moveY(7f);
+    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+    		loli.moveY(2f);
     	}
-    
+    	
+		frameTicks++;
+		
+		if(frameTicks == aniSpeed) {
+			frameTicks = 0;
+			current_frame++;
+
+            if(current_frame == 4 ) {
+            	current_frame = 0;
+            }
+		}
+    	
+		
+//		if(current_frame > 3) {
+//    		current_frame = 0;
+//    	}
+    	
     }
     
     @Override
@@ -107,7 +124,13 @@ public class MyGdxGame extends ApplicationAdapter {
         blockTex[3] =  new Texture(Gdx.files.internal("../core/assets/block4.png"));
         
         charTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
-        font.setColor(Color.RED);
+        
+        walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
+        for (int i = 0; i < 4; i++){
+        	walkAnimation[i] = new TextureRegion(walkTex,i*123,0,123,220);
+        }
+        
+        font.setColor(Color.RED);	
         
         debugRender = new Box2DDebugRenderer();
         
@@ -140,7 +163,9 @@ public class MyGdxGame extends ApplicationAdapter {
     	batch.draw(backImage,0,0);
     	
     	//left
-    	batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
+    	//batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
+    	
+    	batch.draw(walkAnimation[current_frame],loli.getBoxX()*WORLD_TO_RENDER,loli.getBoxY()*WORLD_TO_RENDER);
         
     	batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
     	
