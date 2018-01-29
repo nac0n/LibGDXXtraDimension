@@ -10,13 +10,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
+
+import box2dLight.PointLight;
+import box2dLight.RayHandler;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -41,38 +44,52 @@ public class MyGdxGame extends ApplicationAdapter {
     
     private int frameTicks = 0;
     private final int aniSpeed = 16;
+    private ContactListener cl;
+    private Contact contact;
+    private RayHandler rayhandler;
+    private PointLight pl;
     
     private Texture[] blockTex;
     
     private Matrix4 cameraBox2D;
     private Box2DDebugRenderer debugRender;
-    public OrthographicCamera camera;
+    public OrthographicCamera camera, lightCamera;
     //------------------
     
-    //Add update functions in here
-    private void update() {
-    	
-    	//System.out.println("Box X: " + loli.getBoxX());
-    	//System.out.println("Box Y: " + loli.getBoxY());
-    	
+    private void input() {
     	if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-    		loli.moveX(-1);
+    		loli.moveX(-2);
     	} 
     	else if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-    		loli.moveX(1);
+    		loli.moveX(2);
     	}
     	else {
     		loli.moveX(0);
     	}
+    
+    	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+    		loli.moveY(7f);
+    	}
+    }
+    
+    //Add update functions in here
+    private void update() {
     	
-    	world.step(1/60f, 10, 5);
+    	//Input update
+    	input();
+    	
+    	//Do a step in the physics
+    	world.step(1/60f, 3, 3);
+    	
+    	//Render camera update after stepping is done in physics
     	camera.update();
     	
-    	if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-    		loli.moveY(2f);
-    	}
-    	
-		frameTicks++;
+    	//Change light position to follow player to give sight
+    	pl.setPosition((loli.getBoxX()+loli.getWidth()), 
+    					(loli.getBoxY()+loli.getHeight()*1.5f));
+    	pl.update();
+    	lightCamera.update();
+    	frameTicks++;
 		
 		if(frameTicks == aniSpeed) {
 			frameTicks = 0;
@@ -83,11 +100,6 @@ public class MyGdxGame extends ApplicationAdapter {
             }
 		}
     	
-		
-//		if(current_frame > 3) {
-//    		current_frame = 0;
-//    	}
-    	
     }
     
     @Override
@@ -95,7 +107,13 @@ public class MyGdxGame extends ApplicationAdapter {
     	//Init for Box2D world
     	Box2D.init();
     	world = new World(new Vector2(0,-10f),true);
+
     	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
+    	
+    	rayhandler = new RayHandler(world);
+    	rayhandler.setShadows(true);
+    	rayhandler.setAmbientLight(0, 0, 0, 0.0f); 
+    	rayhandler.setBlurNum(1);
     	
     	map = new Map("../core/assets/matrix.txt", world, RENDER_TO_WORLD);
     	
@@ -106,17 +124,23 @@ public class MyGdxGame extends ApplicationAdapter {
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
     	camera.update();
     	
+    	lightCamera = new OrthographicCamera(w*RENDER_TO_WORLD, h*RENDER_TO_WORLD);
+    	lightCamera.position.set(lightCamera.viewportWidth / 2f, lightCamera.viewportHeight / 2f, 0);
+    	lightCamera.update();
+    	
         batch = new SpriteBatch();    
         font = new BitmapFont();
         loli = new Character(0,750, world, 123*RENDER_TO_WORLD, 192*RENDER_TO_WORLD);
-        //loli2 = new Character(600,600, world);
+     
+        pl = new PointLight(rayhandler, 256, new Color(1,1,1,0.8f), 600*RENDER_TO_WORLD, 0, 0);
+        pl.setSoft(true);
+        pl.setStaticLight(false);
         
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
         floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
         
         //Block textures create:
         blockTex = new Texture[4];
-        //block1 = new Texture(Gdx.files.internal("../core/assets/block1"));
         
         blockTex[0] =  new Texture(Gdx.files.internal("../core/assets/block1.png"));
         blockTex[1] =  new Texture(Gdx.files.internal("../core/assets/block2.png"));
@@ -134,18 +158,15 @@ public class MyGdxGame extends ApplicationAdapter {
         
         debugRender = new Box2DDebugRenderer();
         
-        fillWorld();
-        
     }
 
-    private void fillWorld() {
-    	
-    }
     
     @Override
     public void dispose() {
         batch.dispose();
         font.dispose();
+        world.dispose();
+        rayhandler.dispose();
     }
 
     @Override
@@ -164,27 +185,30 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	//left
     	//batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-    	
     	batch.draw(walkAnimation[current_frame],loli.getBoxX()*WORLD_TO_RENDER,loli.getBoxY()*WORLD_TO_RENDER);
-        
     	batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
     	
-    	//Render floor from map class 
+    	//Render the map from map object
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
 			for(int x = 0; x < map.getMapWidth(); x++) {
 				if(map.getValue(y, x) != 0) {
-		    		batch.draw(blockTex[map.getValue(y, x) - 1], x*64, 1280-y*64);
+		    		batch.draw(blockTex[map.getValue(y, x) - 1], x*64, (1280-64)-y*64);
 		    	}	
 			}
 		}
     	
     	
         batch.end();
-        debugRender.render(world, cameraBox2D);
+        
+        rayhandler.setCombinedMatrix(lightCamera);
+        rayhandler.updateAndRender();
+        
+        //debugRender.render(world, cameraBox2D);
     }
     
     @Override
     public void resize(int width, int height) {
+    	
     }
 
     @Override

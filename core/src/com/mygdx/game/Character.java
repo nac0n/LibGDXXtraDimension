@@ -42,7 +42,7 @@ public class Character {
 		//body.setLinearVelocity(0.1f, 0.0f);
 	}
 	
-	public void moveX(float mx){
+	public void moveX(float mx) {
 		body.setLinearVelocity(mx, body.getLinearVelocity().y);
 		
 		if(mx > 0)
@@ -53,13 +53,27 @@ public class Character {
 	
 	public void moveY(float my) {
 		//body.setLinearVelocity(body.getLinearVelocity().x, my);
-		body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
+		if(body.getLinearVelocity().y == 0)
+			body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
 		if(my < 0)
 			down = true;
 		else
 			down = false;
 	}
-		
+	
+	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
+	}
+	
+	public Body getBody() {
+		return body;
+	}
+	
 	public int getX() {
 		return x;		
 	}

@@ -48,7 +48,7 @@ public class Map {
 		for(int y = this.getMapHeight() - 1; y >= 0; y--) {
 			for(int x = 0; x < this.getMapWidth(); x++) {
 		    	if(this.getValue(y, x) != 0) {
-		    		blocks[y][x] = new Block(x*64, 1280-y*64, world, 64*RENDER_TO_WORLD, 64*RENDER_TO_WORLD);
+		    		blocks[y][x] = new Block(x*64, (1280-64)-y*64, world, 64*RENDER_TO_WORLD, 64*RENDER_TO_WORLD);
 		    	}	
 			}
 		}
