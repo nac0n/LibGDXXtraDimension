@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -11,9 +12,10 @@ public class Character {
 	private int y;
 	private Body body;
 	
-	private TextureRegion[][] frames;
+	private TextureRegion[][] idleAnimation; 
+	private TextureRegion[][] walkAnimation;
 	private int frameTicks = 0;
-    private final int aniSpeed = 16;
+    private final int aniSpeed = 10;
     private int current_frame = 0;
     
 	private float width = 0.5f;
@@ -23,6 +25,7 @@ public class Character {
 	private boolean down;
 	
 	private float vY;
+	
 	Character(int sx, int sy, World world, float width, float height) {
 		x = sx;
 		y = sy;
@@ -65,12 +68,16 @@ public class Character {
 		
 		//body.setLinearVelocity(0.1f, 0.0f);
 		
-		frames = new TextureRegion[2][4];
-		
+		idleAnimation = new TextureRegion[2][1];
+		walkAnimation = new TextureRegion[2][4];
+		Texture idleTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
 		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
         
         for (int i = 0; i < 4; i++) {
-        	frames[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
+        	walkAnimation[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
+        }
+        for (int i = 0; i < 1; i++) {
+        	idleAnimation[1][i] = new TextureRegion(idleTex,i*123,0,123,220);
         }
 	}
 	
@@ -141,7 +148,7 @@ public class Character {
 	}
 	
 	public TextureRegion getTex() {
-		return frames[1][current_frame];
+		return walkAnimation[1][current_frame];
 	}
 	
 	public void update() {
@@ -156,6 +163,46 @@ public class Character {
             	current_frame = 0;
             }
 		}
+		
+	}
+	
+	public void draw(SpriteBatch batch, float WORLD_TO_RENDER) {
+		
+		//idle
+		////
+		if( body.getLinearVelocity().x == 0 && body.getLinearVelocity().y == 0 ) {
+			
+		}
+		///////////
+		//Going right 
+		if(right == true && body.getLinearVelocity().y == 0 ) {
+			batch.draw(getTex(),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
+		}
+		//Going up and right
+		else if( right == true && body.getLinearVelocity().y > 0 ) {
+			
+			
+		}
+		//Going down and right
+		else if( right == true && body.getLinearVelocity().y < 0 ) {
+			
+		}
+		////////////
+		//Going left 
+		else if(right != true && body.getLinearVelocity().y == 0 ) {
+			batch.draw(getTex(),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,-((this.width*2)*WORLD_TO_RENDER),((this.height*2)*WORLD_TO_RENDER+30f));
+		}
+		
+		//Going up and left
+		else if( right != true && body.getLinearVelocity().y > 0 ) {
+			
+		}
+		//Going down and left
+		else if( right != true && body.getLinearVelocity().y < 0 ) {
+			
+			
+		}
+
 		
 	}
 		

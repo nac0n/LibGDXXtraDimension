@@ -36,7 +36,7 @@ public class MyGdxGame extends ApplicationAdapter {
     //put objects here
     //------------------
     private World world;
-    private Texture charTex;
+    //private Texture charTex;
 
     private ContactListener cl;
     private Contact contact;
@@ -130,7 +130,7 @@ public class MyGdxGame extends ApplicationAdapter {
         blockTex[2] =  new Texture(Gdx.files.internal("../core/assets/block3.png"));
         blockTex[3] =  new Texture(Gdx.files.internal("../core/assets/block4.png"));
         
-        charTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
+        //charTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
         
         
         
@@ -165,7 +165,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	//left
     	//batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-    	batch.draw(loli.getTex(),loli.getBoxX()*WORLD_TO_RENDER,loli.getBoxY()*WORLD_TO_RENDER);
+    	loli.draw(batch, WORLD_TO_RENDER);
     	
     	//Render the map from map object
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {
@@ -182,7 +182,7 @@ public class MyGdxGame extends ApplicationAdapter {
         rayhandler.setCombinedMatrix(lightCamera);
         rayhandler.updateAndRender();
         
-        //debugRender.render(world, cameraBox2D);
+        debugRender.render(world, cameraBox2D);
     }
     
     @Override
