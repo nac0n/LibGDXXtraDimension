@@ -36,14 +36,8 @@ public class MyGdxGame extends ApplicationAdapter {
     //put objects here
     //------------------
     private World world;
-    private Block floor;
-    private Texture floorTex;
-    private Texture charTex, walkTex;
-    private int current_frame = 0;
-    private TextureRegion[] walkAnimation = new TextureRegion[4];
-    
-    private int frameTicks = 0;
-    private final int aniSpeed = 16;
+    private Texture charTex;
+
     private ContactListener cl;
     private Contact contact;
     private RayHandler rayhandler;
@@ -89,16 +83,8 @@ public class MyGdxGame extends ApplicationAdapter {
     					(loli.getBoxY()+loli.getHeight()*1.5f));
     	pl.update();
     	lightCamera.update();
-    	frameTicks++;
-		
-		if(frameTicks == aniSpeed) {
-			frameTicks = 0;
-			current_frame++;
-
-            if(current_frame == 4 ) {
-            	current_frame = 0;
-            }
-		}
+    	
+    	loli.update();
     	
     }
     
@@ -108,7 +94,6 @@ public class MyGdxGame extends ApplicationAdapter {
     	Box2D.init();
     	world = new World(new Vector2(0,-10f),true);
 
-    	floor = new Block(0,48, world, 1280*RENDER_TO_WORLD, 96*RENDER_TO_WORLD);
     	
     	rayhandler = new RayHandler(world);
     	rayhandler.setShadows(true);
@@ -137,8 +122,6 @@ public class MyGdxGame extends ApplicationAdapter {
         pl.setStaticLight(false);
         
         backImage = new Texture(Gdx.files.internal("../core/assets/generalconcept.png"));
-        floorTex = new Texture(Gdx.files.internal("../core/assets/placeFloor.png"));
-        
         //Block textures create:
         blockTex = new Texture[4];
         
@@ -149,10 +132,7 @@ public class MyGdxGame extends ApplicationAdapter {
         
         charTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
         
-        walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
-        for (int i = 0; i < 4; i++){
-        	walkAnimation[i] = new TextureRegion(walkTex,i*123,0,123,220);
-        }
+        
         
         font.setColor(Color.RED);	
         
@@ -185,8 +165,7 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	//left
     	//batch.draw(charTex, loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
-    	batch.draw(walkAnimation[current_frame],loli.getBoxX()*WORLD_TO_RENDER,loli.getBoxY()*WORLD_TO_RENDER);
-    	batch.draw(floorTex, floor.getX()*WORLD_TO_RENDER, floor.getY()*WORLD_TO_RENDER);
+    	batch.draw(loli.getTex(),loli.getBoxX()*WORLD_TO_RENDER,loli.getBoxY()*WORLD_TO_RENDER);
     	
     	//Render the map from map object
     	for(int y = map.getMapHeight() - 1; y >= 0 ; y--) {

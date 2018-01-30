@@ -1,5 +1,9 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 public class Character {
@@ -7,6 +11,11 @@ public class Character {
 	private int y;
 	private Body body;
 	
+	private TextureRegion[][] frames;
+	private int frameTicks = 0;
+    private final int aniSpeed = 16;
+    private int current_frame = 0;
+    
 	private float width = 0.5f;
 	private float height = 1.0f;
 	
@@ -27,8 +36,23 @@ public class Character {
 		bodyDef.position.set(((float)x)/96 + this.width, ((float)y)/96 + this.height);
 		this.body = world.createBody(bodyDef);
 		body.setFixedRotation(true);
+		
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(this.width/2, this.height);
+		Vector2[] vertices = new Vector2[8];
+		float heightSlope = 0.02f;
+		vertices[0] = new Vector2(-this.width/2, (this.height-heightSlope));
+		vertices[1] = new Vector2(-(this.width/2-0.05f), this.height);
+
+		vertices[2] = new Vector2((this.width/2-0.05f), this.height);
+		vertices[3] = new Vector2(this.width/2, (this.height-heightSlope));
+
+		vertices[4] = new Vector2(this.width/2, -(this.height-heightSlope));
+		vertices[5] = new Vector2((this.width/2-0.05f), -(this.height-heightSlope/2));
+
+		vertices[6] = new Vector2(-(this.width/2-0.05f),-(this.height-heightSlope/2));
+		vertices[7] = new Vector2(-this.width/2,-(this.height-heightSlope));
+		shape.set(vertices);
+		//shape.setAsBox(this.width/2, this.height);
 		
 		FixtureDef fixt = new FixtureDef();
 		fixt.shape = shape;
@@ -40,6 +64,14 @@ public class Character {
 		shape.dispose(); //Remove shape
 		
 		//body.setLinearVelocity(0.1f, 0.0f);
+		
+		frames = new TextureRegion[2][4];
+		
+		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
+        
+        for (int i = 0; i < 4; i++) {
+        	frames[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
+        }
 	}
 	
 	public void moveX(float mx) {
@@ -106,6 +138,25 @@ public class Character {
 	
 	public float getBoxY() {
 		return body.getPosition().y - this.height;
+	}
+	
+	public TextureRegion getTex() {
+		return frames[1][current_frame];
+	}
+	
+	public void update() {
+		
+		frameTicks++;
+		
+		if(frameTicks == aniSpeed) {
+			frameTicks = 0;
+			current_frame++;
+
+            if(current_frame == 4 ) {
+            	current_frame = 0;
+            }
+		}
+		
 	}
 		
 }
