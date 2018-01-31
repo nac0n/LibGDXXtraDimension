@@ -224,7 +224,8 @@ public class Character {
 		////////////
 		//Going left 
 		else if(right != true && !isJumping && !isFalling ) {
-			batch.draw(getTex(1),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,-((this.width*2)*WORLD_TO_RENDER),((this.height*2)*WORLD_TO_RENDER+30f));
+			batch.draw(getTex(1),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 		}
 		
 		//Going up and left
