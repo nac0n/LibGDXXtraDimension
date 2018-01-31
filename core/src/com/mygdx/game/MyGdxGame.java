@@ -28,6 +28,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Texture backImage;
     private Map map;
     
+    private boolean showDebug = false;
+    
     //Constants used to go between coordinate systems
     //example: renderX = body.getPosition().x * WORLD_TO_RENDER;
     private final float WORLD_TO_RENDER = 96f;
@@ -64,6 +66,11 @@ public class MyGdxGame extends ApplicationAdapter {
     	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
     		loli.moveY(7f);
     	}
+    	
+    	if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+    		showDebug = !showDebug;
+    	
+    	
     }
     
     //Add update functions in here
@@ -182,7 +189,8 @@ public class MyGdxGame extends ApplicationAdapter {
         rayhandler.setCombinedMatrix(lightCamera);
         rayhandler.updateAndRender();
         
-        debugRender.render(world, cameraBox2D);
+        if(showDebug)
+        	debugRender.render(world, cameraBox2D);
     }
     
     @Override
