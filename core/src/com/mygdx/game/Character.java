@@ -15,7 +15,7 @@ public class Character {
 	private TextureRegion[][] idleAnimation; 
 	private TextureRegion[][] animations;
 	private int frameTicks = 0;
-    private final int aniSpeed = 10;
+    private final int aniSpeed = 6;
     private int current_frame = 0;
     
     private int ticks = 0;
@@ -73,15 +73,19 @@ public class Character {
 		//body.setLinearVelocity(0.1f, 0.0f);
 		
 		idleAnimation = new TextureRegion[2][1];
-		animations = new TextureRegion[2][4];
+		animations = new TextureRegion[3][4];
 		Texture idleTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
 		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
+		Texture jumpTex = new Texture(Gdx.files.internal("../core/assets/jump.png"));
         
         for (int i = 0; i < 4; i++) {
         	animations[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
         }
         for (int i = 0; i < 4; i++) {
         	animations[0][i] = new TextureRegion(idleTex,0,0,123,220);
+        }
+        for (int i = 0; i < 4; i++) {
+        	animations[2][i] = new TextureRegion(jumpTex,0,0,123,220);
         }
 	}
 	
@@ -214,12 +218,12 @@ public class Character {
 		}
 		//Going up and right
 		else if( right == true && isJumping ) {
-			
+			batch.draw(getTex(2),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 			
 		}
 		//Going down and right
 		else if( right == true && isFalling ) {
-			
+			batch.draw(getTex(2),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 		}
 		////////////
 		//Going left 
@@ -230,11 +234,13 @@ public class Character {
 		
 		//Going up and left
 		else if( right != true && isJumping ) {
-			
+			batch.draw(getTex(2),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 		}
 		//Going down and left
 		else if( right != true && isFalling ) {
-			
+			batch.draw(getTex(2),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 			
 		}
 
