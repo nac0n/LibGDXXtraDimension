@@ -208,8 +208,6 @@ public class Character {
 			else
 				batch.draw(getTex(0),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
 							-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
-			
-			
 		}
 		///////////
 		//Going right 
