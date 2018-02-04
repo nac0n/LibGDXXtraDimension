@@ -76,7 +76,7 @@ public class Character {
 		animations = new TextureRegion[3][4];
 		Texture idleTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
 		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
-		Texture jumpTex = new Texture(Gdx.files.internal("../core/assets/jump.png"));
+		Texture jumpTex = new Texture(Gdx.files.internal("../core/assets/jump/1.png"));
         
         for (int i = 0; i < 4; i++) {
         	animations[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
