@@ -86,7 +86,7 @@ public class Character {
 		
 		if(mx > 0)
 			right = true;
-		else
+		else if( mx < 0 )
 			right = false;
 	}
 	
@@ -175,12 +175,11 @@ public class Character {
 		}
 		///////////
 		//Going right 
-		if(right == true && body.getLinearVelocity().y == 0 ) {
+		else if(right == true && body.getLinearVelocity().y == 0 ) {
 			batch.draw(getTex(),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 		}
 		//Going up and right
 		else if( right == true && body.getLinearVelocity().y > 0 ) {
-			
 			
 		}
 		//Going down and right
