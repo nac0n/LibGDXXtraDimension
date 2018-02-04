@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -18,13 +19,20 @@ public class Block {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyDef.BodyType.StaticBody;
 		bodyDef.position.set(((float)x)/96 + this.width, ((float)y)/96 + this.height);
-		this.body = world.createBody(bodyDef);
 		
+		this.body = world.createBody(bodyDef);
 		PolygonShape shape = new PolygonShape();
 		
-		
 		shape.setAsBox(this.width, this.height);
-		this.body.createFixture(shape, 5.f);
+		
+		FixtureDef fixt = new FixtureDef();
+		fixt.shape = shape;
+		fixt.density = 0.f;
+		fixt.friction = 0.f;
+		
+		this.body.createFixture(fixt);
+		
+		
 		shape.dispose(); //Remove shape
 	}
 	

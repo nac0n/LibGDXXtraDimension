@@ -13,10 +13,14 @@ public class Character {
 	private Body body;
 	
 	private TextureRegion[][] idleAnimation; 
-	private TextureRegion[][] walkAnimation;
+	private TextureRegion[][] animations;
 	private int frameTicks = 0;
-    private final int aniSpeed = 10;
+    private final int aniSpeed = 6;
     private int current_frame = 0;
+    
+    private int ticks = 0;
+    private boolean isFalling = false;
+    private boolean isJumping = true;
     
 	private float width = 0.5f;
 	private float height = 1.0f;
@@ -69,15 +73,19 @@ public class Character {
 		//body.setLinearVelocity(0.1f, 0.0f);
 		
 		idleAnimation = new TextureRegion[2][1];
-		walkAnimation = new TextureRegion[2][4];
+		animations = new TextureRegion[3][4];
 		Texture idleTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
 		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));
+		Texture jumpTex = new Texture(Gdx.files.internal("../core/assets/jump.png"));
         
         for (int i = 0; i < 4; i++) {
-        	walkAnimation[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
+        	animations[1][i] = new TextureRegion(walkTex,i*123,0,123,220);
         }
-        for (int i = 0; i < 1; i++) {
-        	idleAnimation[1][i] = new TextureRegion(idleTex,i*123,0,123,220);
+        for (int i = 0; i < 4; i++) {
+        	animations[0][i] = new TextureRegion(idleTex,0,0,123,220);
+        }
+        for (int i = 0; i < 4; i++) {
+        	animations[2][i] = new TextureRegion(jumpTex,0,0,123,220);
         }
 	}
 	
@@ -92,7 +100,7 @@ public class Character {
 	
 	public void moveY(float my) {
 		//body.setLinearVelocity(body.getLinearVelocity().x, my);
-		if(body.getLinearVelocity().y == 0)
+		if(!isJumping && !isFalling)
 			body.applyLinearImpulse(0, my, body.getPosition().x, body.getPosition().y, true);
 		if(my < 0)
 			down = true;
@@ -147,8 +155,8 @@ public class Character {
 		return body.getPosition().y - this.height;
 	}
 	
-	public TextureRegion getTex() {
-		return walkAnimation[1][current_frame];
+	public TextureRegion getTex(int i) {
+		return animations[i][current_frame];
 	}
 	
 	public void update() {
@@ -164,41 +172,73 @@ public class Character {
             }
 		}
 		
+		//ticks for falling/jumping
+		if(body.getLinearVelocity().y != 0) {
+			ticks++;
+		}
+		else
+			ticks = 0;
+		
+		//When n ticks have been reached, go to jumping/falling state
+		if(ticks > 5) {
+			if(body.getLinearVelocity().y > 0) {
+				isJumping = true;
+				isFalling = false;
+			}
+			else {
+				isJumping = false;
+				isFalling = true;
+			}
+				
+		}
+		else {
+			isJumping = false;
+			isFalling = false;
+		}
 	}
 	
 	public void draw(SpriteBatch batch, float WORLD_TO_RENDER) {
 		
 		//idle
 		////
-		if( body.getLinearVelocity().x == 0 && body.getLinearVelocity().y == 0 ) {
-			
+		if( body.getLinearVelocity().x == 0 && !isJumping && !isFalling) {
+			if(right) {
+				batch.draw(getTex(0), getBoxX()*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER);
+			}
+			else
+				batch.draw(getTex(0),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+							-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 		}
 		///////////
 		//Going right 
-		else if(right == true && body.getLinearVelocity().y == 0 ) {
-			batch.draw(getTex(),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
+		else if(right == true && !isJumping && !isFalling ) {
+			batch.draw(getTex(1),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 		}
 		//Going up and right
-		else if( right == true && body.getLinearVelocity().y > 0 ) {
+		else if( right == true && isJumping ) {
+			batch.draw(getTex(2),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 			
 		}
 		//Going down and right
-		else if( right == true && body.getLinearVelocity().y < 0 ) {
-			
+		else if( right == true && isFalling ) {
+			batch.draw(getTex(2),getBoxX()*WORLD_TO_RENDER,getBoxY()*WORLD_TO_RENDER);
 		}
 		////////////
 		//Going left 
-		else if(right != true && body.getLinearVelocity().y == 0 ) {
-			batch.draw(getTex(),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,-((this.width*2)*WORLD_TO_RENDER),((this.height*2)*WORLD_TO_RENDER+30f));
+		else if(right != true && !isJumping && !isFalling ) {
+			batch.draw(getTex(1),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 		}
 		
 		//Going up and left
-		else if( right != true && body.getLinearVelocity().y > 0 ) {
-			
+		else if( right != true && isJumping ) {
+			batch.draw(getTex(2),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 		}
 		//Going down and left
-		else if( right != true && body.getLinearVelocity().y < 0 ) {
-			
+		else if( right != true && isFalling ) {
+			batch.draw(getTex(2),(getBoxX()+width*2)*WORLD_TO_RENDER, getBoxY()*WORLD_TO_RENDER,
+					-(getTex(0).getRegionWidth()),(getTex(0).getRegionHeight()));
 			
 		}
 

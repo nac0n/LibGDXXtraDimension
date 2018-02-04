@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,6 +30,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Texture backImage;
     private Map map;
     
+    private boolean showDebug = false;
+    
     //Constants used to go between coordinate systems
     //example: renderX = body.getPosition().x * WORLD_TO_RENDER;
     private final float WORLD_TO_RENDER = 96f;
@@ -48,6 +52,9 @@ public class MyGdxGame extends ApplicationAdapter {
     private Matrix4 cameraBox2D;
     private Box2DDebugRenderer debugRender;
     public OrthographicCamera camera, lightCamera;
+    
+    private Sound testSound;
+    private Music testMusic;
     //------------------
     
     private void input() {
@@ -64,6 +71,14 @@ public class MyGdxGame extends ApplicationAdapter {
     	if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
     		loli.moveY(7f);
     	}
+    	
+    	if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+    		showDebug = !showDebug;
+    	
+    	if(Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+    		testSound.play();
+    	}
+    	
     }
     
     //Add update functions in here
@@ -138,6 +153,12 @@ public class MyGdxGame extends ApplicationAdapter {
         
         debugRender = new Box2DDebugRenderer();
         
+        
+        //audio
+        testSound = Gdx.audio.newSound(Gdx.files.internal("../core/assets/heartbeat.mp3"));
+        testMusic = Gdx.audio.newMusic(Gdx.files.internal("../core/assets/indoor_ambient.mp3"));
+        testMusic.setLooping(true);
+        testMusic.play();
     }
 
     
@@ -182,7 +203,8 @@ public class MyGdxGame extends ApplicationAdapter {
         rayhandler.setCombinedMatrix(lightCamera);
         rayhandler.updateAndRender();
         
-        debugRender.render(world, cameraBox2D);
+        if(showDebug)
+        	debugRender.render(world, cameraBox2D);
     }
     
     @Override
