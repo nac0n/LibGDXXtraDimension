@@ -12,7 +12,6 @@ public class Character {
 	private int y;
 	private Body body;
 	
-	private TextureRegion[][] idleAnimation; 
 	private TextureRegion[][] animations;
 	private int frameTicks = 0;
     private final int aniSpeed = 6;
@@ -28,7 +27,6 @@ public class Character {
 	private boolean right;
 	private boolean down;
 	
-	private float vY;
 	
 	Character(int sx, int sy, World world, float width, float height) {
 		x = sx;
@@ -72,7 +70,6 @@ public class Character {
 		
 		//body.setLinearVelocity(0.1f, 0.0f);
 		
-		idleAnimation = new TextureRegion[2][1];
 		animations = new TextureRegion[3][4];
 		Texture idleTex = new Texture(Gdx.files.internal("../core/assets/protag.png")); 
 		Texture walkTex = new Texture(Gdx.files.internal("../core/assets/spritesheet4frames.png"));

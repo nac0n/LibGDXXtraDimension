@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import com.badlogic.gdx.physics.box2d.World;
@@ -31,6 +30,8 @@ public class Map {
 					//System.out.print(matrix[i][x]);
 				}
 			}
+			
+			in.close();
 			
 		}catch(Exception fnfe) {
 			fnfe.printStackTrace();
