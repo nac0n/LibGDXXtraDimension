@@ -10,6 +10,9 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Character {
 	private int x;
 	private int y;
+	private int prevX;
+	private int prevY;
+	
 	private Body body;
 	
 	private TextureRegion[][] animations;
@@ -126,6 +129,14 @@ public class Character {
 		return y;
 	}
 		
+	public int getPrevX() {
+		return prevX;		
+	}
+		
+	public int getPrevY() {
+		return prevY;
+	}
+	
 	public void setX(int sx) {
 		x = sx;
 	
@@ -134,6 +145,13 @@ public class Character {
 	public void setY(int sy) {
 		y = sy;
 	
+	}
+	public void setPrevX(int spx) {
+		prevX = spx;
+	}
+		
+	public void setPrevY(int spy) {
+		prevY = spy;
 	}
 	
 	public boolean goingRight() {
