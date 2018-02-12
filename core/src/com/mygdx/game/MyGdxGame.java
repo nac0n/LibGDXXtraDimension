@@ -54,6 +54,8 @@ public class MyGdxGame extends ApplicationAdapter {
     private Matrix4 cameraBox2D;
     private Box2DDebugRenderer debugRender;
     public OrthographicCamera worldCamera, lightCamera;
+    private Camera cam;
+    
     
     private Sound testSound;
     private Music testMusic;
@@ -101,17 +103,18 @@ public class MyGdxGame extends ApplicationAdapter {
     	worldCamera.update();
     	
     	//Change light position to follow player to give sight
-    	//pl.setPosition((loli.getBoxX()+loli.getWidth()),(loli.getBoxY()+loli.getHeight()*1.5f));
+    	pl.setPosition((loli.getBoxX()+loli.getWidth()),(loli.getBoxY()+loli.getHeight()*1.5f));
     	//pl.setPosition((loli.getBoxX()*WORLD_TO_RENDER)+(loli.getWidth()/2), (loli.getBoxY()*WORLD_TO_RENDER) +(loli.getHeight()/2));
-    	pl.setPosition(loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
+    	//pl.setPosition(loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER);
     	pl.update();
     	
-    	System.out.println(loli.getBoxX()*WORLD_TO_RENDER);
+    	//System.out.println(loli.getBoxX()*WORLD_TO_RENDER);
     	//lightCamera.position.set((loli.getBoxX()*WORLD_TO_RENDER)+(loli.getWidth()/2), (loli.getBoxY()*WORLD_TO_RENDER)+(loli.getHeight()/2), 0);
-    	lightCamera.position.set(loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER, 0);
+    	lightCamera.position.set(loli.getBoxX(), loli.getBoxY(), 0);
     	//lightCamera.position.set(loli.getBoxX()*WORLD_TO_RENDER, loli.getBoxY()*WORLD_TO_RENDER, 0);
     	lightCamera.update();
     	loli.update();
+    	cam.update(loli.getBoxX(),loli.getBoxY(),loli.getWidth(),loli.getHeight());
     	
     }
     
@@ -130,6 +133,9 @@ public class MyGdxGame extends ApplicationAdapter {
     	
     	float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();      
+        
+        cam = new Camera(w,h);
+        
         
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -189,10 +195,11 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         update();
-        cameraBox2D = worldCamera.combined.cpy();
-        cameraBox2D.scl(WORLD_TO_RENDER);
+        //cameraBox2D = worldCamera.combined.cpy();
+        //cameraBox2D.scl(WORLD_TO_RENDER);
         
-        batch.setProjectionMatrix(worldCamera.combined);
+        //batch.setProjectionMatrix(worldCamera.combined);
+        batch.setProjectionMatrix(cam.getWorld().combined);
         
     	batch.begin();
     	batch.draw(backImage,0,0);
@@ -213,11 +220,15 @@ public class MyGdxGame extends ApplicationAdapter {
     	
         batch.end();
         
-        rayhandler.setCombinedMatrix(lightCamera);
+        //rayhandler.setCombinedMatrix(lightCamera);
+        rayhandler.setCombinedMatrix(cam.getLight());
         rayhandler.updateAndRender();
         
-        if(showDebug)
-        	debugRender.render(world, cameraBox2D);
+        if(showDebug) {
+        	//debugRender.render(world, cameraBox2D);
+        	debugRender.render(world, cam.getDebug());
+        }
+        	
     }
     
     @Override
